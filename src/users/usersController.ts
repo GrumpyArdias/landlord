@@ -2,27 +2,37 @@ import userService from "./userService";
 import { IUser, IUserReq } from "../types/user";
 import { IReq, IRes } from "../types/controllers";
 import { typeGuards } from "@src/utils/typeGuards.utils";
-//TODO: Falta añadir middelware de error, types de req y res
+import { ErrorType } from "@src/enums/errors";
+import { ErrorWithStatus } from "@src/utils/errors.utils";
+//TODO: Falta añadir middelware de error
 
 const getUsers = async (_req: IReq<void>, res: IRes<IUser[]>) => {
   try {
     const users = await userService.getUsers();
     return res.status(200).json({ payload: users });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    if (error instanceof ErrorWithStatus) {
+      throw error;
+    } else {
+      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+    }
   }
 };
 
-const getUser = async (_req: IReq<void>, res: IRes<IUser>) => {
+const getUser = async (req: IReq<void>, res: IRes<IUser>) => {
   try {
     const user = await userService.getUser(Number(req.params.id));
     return res.status(200).json({ payload: user });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    if (error instanceof ErrorWithStatus) {
+      throw error;
+    } else {
+      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+    }
   }
 };
 
-const createUser = async (_req: IReq<void>, res: IRes<IUser>) => {
+const createUser = async (req: IReq<IUserReq>, res: IRes<IUser>) => {
   try {
     const user = req.body;
 
@@ -38,7 +48,11 @@ const createUser = async (_req: IReq<void>, res: IRes<IUser>) => {
       return res.status(400).json("Invalid user data");
     }
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    if (error instanceof ErrorWithStatus) {
+      throw error;
+    } else {
+      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+    }
   }
 };
 const updateUser = async (req: IReq<Partial<IUserReq>>, res: IRes<IUser>) => {
@@ -56,7 +70,11 @@ const updateUser = async (req: IReq<Partial<IUserReq>>, res: IRes<IUser>) => {
         .json("You must provide at least one field to update");
     }
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    if (error instanceof ErrorWithStatus) {
+      throw error;
+    } else {
+      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+    }
   }
 };
 
@@ -65,7 +83,11 @@ const deleteUser = async (req: IReq<void>, res: IRes<IUser>) => {
     const user = await userService.deleteUser(Number(req.params.id));
     return res.status(200).json({ payload: user });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    if (error instanceof ErrorWithStatus) {
+      throw error;
+    } else {
+      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+    }
   }
 };
 

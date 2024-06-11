@@ -1,4 +1,4 @@
-import type { IUserReq } from "@src/users/user.d";
+import type { IUserReq } from "@src/types/user";
 
 const isUserReqType = (data: any): data is IUserReq => {
   if (

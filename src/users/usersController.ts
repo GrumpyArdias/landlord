@@ -4,7 +4,7 @@ import { IReq, IRes } from "../types/controllers";
 import { typeGuards } from "@src/utils/typeGuards.utils";
 import { ErrorType } from "@src/enums/errors";
 import { ErrorWithStatus } from "@src/utils/errors.utils";
-//TODO: Falta añadir middelware de error
+import { hashData } from "@src/utils/bycript.utils";
 
 const getUsers = async (_req: IReq<void>, res: IRes<IUser[]>) => {
   try {
@@ -37,10 +37,10 @@ const createUser = async (req: IReq<IUserReq>, res: IRes<IUser>) => {
     const user = req.body;
 
     if (typeGuards.isUserReqType(user)) {
-      // haspassword
+      const hashedPassword = await hashData(user.password);
       const newUser = await userService.createUser({
         ...user,
-        password: user.password,
+        password: hashedPassword,
       });
 
       return res.status(200).json({ payload: newUser });

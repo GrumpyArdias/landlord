@@ -1,5 +1,6 @@
 import type { IUser, IUserReq } from "@src/types/user";
 import { DBInstance } from "@src/utils/prisma.utils";
+import { hashData } from "@src/utils/bycript.utils";
 
 const prisma = DBInstance.getClient();
 
@@ -33,8 +34,7 @@ const updateUser = async (
 ): Promise<IUser> => {
   const data: Partial<IUserReq> = {};
   if (user.email) data.email = user.email;
-  //TODO: Tienes que hacer el check con el hash cuando lo tengas
-  if (user.password) data.password = user.password;
+  if (user.password) data.password = await hashData(user.password);
 
   const updateUser: IUser = await prisma.user.update({
     where: { id },

@@ -1,4 +1,4 @@
-import type { IUser, IUserReq } from "@src/users/user.d";
+import type { IUser, IUserReq } from "@src/types/user";
 import { DBInstance } from "@src/utils/prisma.utils";
 
 const prisma = DBInstance.getClient();

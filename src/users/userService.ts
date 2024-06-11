@@ -15,11 +15,13 @@ const getUser = async (id: number): Promise<IUser> => {
   return user;
 };
 
-const createUser = async (user: IUserReq): Promise<IUser> => {
+const createUser = async (user: IUserReq): Promise<IUser | null> => {
   const newUser = await prisma.user.create({
-    username: user.username,
-    email: user.email,
-    password: user.password,
+    data: {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+    },
   });
   if (!newUser) throw new Error("User not created");
   return newUser;

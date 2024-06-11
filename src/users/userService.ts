@@ -16,6 +16,14 @@ const getUser = async (id: number): Promise<IUser> => {
   return user;
 };
 
+const getUserByEmail = async (email: string): Promise<IUser | undefined> => {
+  const user: IUser | null = await prisma.user.findUnique({
+    where: { email },
+  });
+  if (!user) return undefined;
+  return user;
+};
+
 const createUser = async (user: IUserReq): Promise<IUser | null> => {
   const newUser = await prisma.user.create({
     data: {
@@ -54,6 +62,7 @@ const deleteUser = async (id: number) => {
 export default {
   getUsers,
   getUser,
+  getUserByEmail,
   createUser,
   updateUser,
   deleteUser,

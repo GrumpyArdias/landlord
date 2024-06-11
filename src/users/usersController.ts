@@ -58,7 +58,6 @@ const createUser = async (req: IReq<IUserReq>, res: IRes<IUser>) => {
 const updateUser = async (req: IReq<Partial<IUserReq>>, res: IRes<IUser>) => {
   try {
     const user = req.body;
-    console.log(user);
     if (user.email || user.password) {
       const updatedUser = await userService.updateUser(
         Number(req.params.id),

@@ -6,6 +6,7 @@ import { IUser } from "../types/user";
 import { ErrorType } from "../enums/errors";
 import { ErrorWithStatus } from "../utils/errors.utils";
 import { compareHashedData } from "../utils/bycript.utils";
+import type { JWTPayload } from "../types/auth";
 
 passport.use(
   "login",
@@ -50,9 +51,13 @@ passport.use(
       secretOrKey: process.env.JWT_SECRET ? process.env.JWT_SECRET : "",
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     },
-    async (payload: { user: IUser }, done) => {
+    async (payload: JWTPayload, done) => {
       try {
-        return done(null, payload.user);
+        const user = await userService.getUser(payload.id);
+        if (!user) {
+          return done(null, false);
+        }
+        return done(null, user);
       } catch (error) {
         return done(error);
       }

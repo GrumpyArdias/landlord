@@ -9,6 +9,7 @@ import { ErrorType } from "@src/enums/errors";
 const login = async (req: IReq<ILoginReq>, res: IRes<LoginPayload>) => {
   try {
     const user = req.user;
+
     if (typeGuards.isUserReqType(user) && user.id) {
       const accessToken = await jwtUtils.generateToken(user.id);
       return res.status(200).json({ accessToken });

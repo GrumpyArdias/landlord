@@ -1,0 +1,227 @@
+openapi: 3.0.0
+
+paths:
+  /users:
+    get:
+      summary: Return an array of all users
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful request
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "401":
+          description: Unauthorized
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal error
+    post:
+      summary: Create a new user and returns it
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/New_User"
+      responses:
+        "200":
+          description: Successful request
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal error
+  /users/{id}:
+    get:
+      summary: Returns the user with the specified id, if's exist
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User identifier
+          example: 5
+      responses:
+        "200":
+          description: Successful request
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+    put:
+      summary: Update the specified user and returns it
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User identifier
+          example: 5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Update_User"
+      responses:
+        "200":
+          description: Successful request
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+    delete:
+      summary: Delete the specified user and returns it
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User identifier
+          example: 5
+      responses:
+        "200":
+          description: Successful request
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 200
+        payload:
+          type: array
+          items:
+            $ref: "#components/schemas/User"
+    User:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 200
+        payload:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            username:
+              type: string
+              example: user
+            email:
+              type: string
+              example: user@mail.com
+            password:
+              type: string
+              example: $2a$12$BcJdMojVC.lQ83RVc/mqlerFwLvdXrd19UoHqe6NUkANliOBJgrSm
+    New_User:
+      type: object
+      required: [email, password, username]
+      properties:
+        id:
+          type: number
+          example: 1
+        email:
+          type: string
+          example: new_user@email.com
+        password:
+          type: string
+          example: new_user_pass.123
+        username:
+          type: string
+          example: newUser_some
+    Update_User:
+      type: object
+      properties:
+        email:
+          type: string
+          example: updated_user_email@email.com
+        password:
+          type: string
+          example: new_password.456
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 401
+        message:
+          type: string
+          example: Unauthorized to get access to this endpoint

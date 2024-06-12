@@ -1,10 +1,9 @@
 import type { IUser } from "./user";
 export interface IProperty {
   id: number;
-  adress: string;
+  address: string;
   city: string;
-  postalCode: string;
-  owner: IUser;
+  postalcode: string;
   ownerId: number;
   createdAt?: Date;
   updatedAt?: Date;

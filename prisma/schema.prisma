@@ -14,10 +14,10 @@ model User {
   password   String
   created    DateTime     @default(now())
   updated    DateTime     @updatedAt
-  properties properties[]
+  properties Properties[]
 }
 
-model properties {
+model Properties {
   id         Int      @id @default(autoincrement())
   address    String
   city       String

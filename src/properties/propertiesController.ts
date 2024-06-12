@@ -4,10 +4,14 @@ import { IReq, IRes } from "../types/controllers";
 import { typeGuards } from "@src/utils/typeGuards.utils";
 import { ErrorType } from "@src/enums/errors";
 import { ErrorWithStatus } from "@src/utils/errors.utils";
+import { IUser } from "@src/types/user";
 
-const getProperties = async (_req: IReq<void>, res: IRes<IProperty[]>) => {
+const getProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
   try {
-    const properties = await propertiesService.getProperties();
+    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    const properties = await propertiesService.getProperties(
+      Number((req.user as IUser).id)
+    );
     return res.status(200).json({ payload: properties });
   } catch (error) {
     if (error instanceof ErrorWithStatus) {
@@ -20,7 +24,11 @@ const getProperties = async (_req: IReq<void>, res: IRes<IProperty[]>) => {
 
 const getProperty = async (req: IReq<void>, res: IRes<IProperty>) => {
   try {
-    const property = await propertiesService.getProperty(Number(req.params.id));
+    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    const property = await propertiesService.getProperty(
+      Number((req.user as IUser).id),
+      Number(req.params.id)
+    );
     return res.status(200).json({ payload: property });
   } catch (error) {
     if (error instanceof ErrorWithStatus) {
@@ -38,7 +46,11 @@ const createProperty = async (
   try {
     const property = req.body;
     if (typeGuards.isPropertyReqType(property)) {
-      const newProperty = await propertiesService.createProperty(property);
+      if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+      const newProperty = await propertiesService.createProperty(
+        Number((req.user as IUser).id),
+        property
+      );
       return res.status(200).json({ payload: newProperty });
     } else {
       return res.status(400).json("Invalid property data");
@@ -58,8 +70,13 @@ const updateProperty = async (
 ) => {
   try {
     const property = req.body;
-    if (property.adress || property.city || property.postalCode) {
-      const updatedProperty = await propertiesService.updateProperty(property);
+    if (property.address || property.city || property.postalcode) {
+      if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+      const updatedProperty = await propertiesService.updateProperty(
+        Number((req.user as IUser).id),
+        Number(req.params.id),
+        property
+      );
       return res.status(200).json({ payload: updatedProperty });
     } else {
       return res.status(400).json("Invalid property data");
@@ -75,7 +92,9 @@ const updateProperty = async (
 
 const deleteProperty = async (req: IReq<void>, res: IRes<IProperty>) => {
   try {
+    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
     const property = await propertiesService.deleteProperty(
+      Number((req.user as IUser).id),
       Number(req.params.id)
     );
     return res.status(200).json({ payload: property });

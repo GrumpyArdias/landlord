@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import "./middleware/passport.middleware";
 import { usersRouter } from "./users/usersRoute";
 import { authRouter } from "./auth/authRoute";
-import { isAuth } from "./middleware/auth.middleware";
+// import { isAuth } from "./middleware/auth.middleware";
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.get("/ping", (_req, res) => {
 
 //ROUTER
 app.use("/login", authRouter);
-app.use("/users", isAuth, usersRouter);
+app.use("/users", usersRouter);
 
 const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {

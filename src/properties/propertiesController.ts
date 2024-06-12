@@ -39,6 +39,25 @@ const getProperty = async (req: IReq<void>, res: IRes<IProperty>) => {
   }
 };
 
+const searchProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
+  try {
+    const query = req.query;
+
+    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    const properties = await propertiesService.searchProperties(
+      Number((req.user as IUser).id),
+      query
+    );
+
+    return res.status(200).json({ payload: properties });
+  } catch (error) {
+    if (error instanceof ErrorWithStatus) {
+      throw error;
+    } else {
+      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+    }
+  }
+};
 const createProperty = async (
   req: IReq<IPropertyReq>,
   res: IRes<IProperty>
@@ -110,6 +129,7 @@ const deleteProperty = async (req: IReq<void>, res: IRes<IProperty>) => {
 export default {
   getProperties,
   getProperty,
+  searchProperties,
   createProperty,
   updateProperty,
   deleteProperty,

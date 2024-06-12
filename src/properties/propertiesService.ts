@@ -21,6 +21,30 @@ const getProperty = async (ownerId: number, id: number): Promise<IProperty> => {
   return property;
 };
 
+const searchProperties = async (
+  ownerId: number,
+  query: { [key: string]: any }
+): Promise<IProperty[]> => {
+  // Build a where clause based on the query parameters
+  const whereClause: { [key: string]: any } = {};
+
+  if (query.address) {
+    whereClause.address = query.address;
+  }
+  if (query.postalcode) {
+    whereClause.postalcode = query.postalcode;
+  }
+
+  const properties: IProperty[] = await prisma.properties.findMany({
+    where: {
+      ownerId: ownerId,
+      ...whereClause,
+    },
+  });
+
+  return properties;
+};
+
 const createProperty = async (
   ownerId: number,
   property: IPropertyReq
@@ -68,6 +92,7 @@ const deleteProperty = async (
 export default {
   getProperties,
   getProperty,
+  searchProperties,
   createProperty,
   updateProperty,
   deleteProperty,

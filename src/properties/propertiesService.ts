@@ -36,6 +36,9 @@ const searchProperties = async (
   if (query.city) {
     whereClause.city = query.city;
   }
+  if (query.country) {
+    whereClause.country = query.country;
+  }
 
   const properties: IProperty[] = await prisma.properties.findMany({
     where: {
@@ -56,6 +59,7 @@ const createProperty = async (
       ownerId: ownerId,
       address: property.address,
       city: property.city,
+      country: property.country,
       postalcode: property.postalcode,
     },
   });
@@ -72,6 +76,7 @@ const updateProperty = async (
   if (property.address) data.address = property.address;
   if (property.city) data.city = property.city;
   if (property.postalcode) data.postalcode = property.postalcode;
+  if (property.country) data.country = property.country;
   const updatedProperty: IProperty = await prisma.properties.update({
     where: { ownerId: ownerId, id },
     data,

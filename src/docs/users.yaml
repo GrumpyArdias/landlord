@@ -187,34 +187,25 @@ components:
             email:
               type: string
               example: user@mail.com
-            password:
-              type: string
-              example: $2a$12$BcJdMojVC.lQ83RVc/mqlerFwLvdXrd19UoHqe6NUkANliOBJgrSm
     New_User:
       type: object
       required: [email, password, username]
       properties:
-        id:
-          type: number
-          example: 1
         email:
           type: string
           example: new_user@email.com
-        password:
-          type: string
-          example: new_user_pass.123
         username:
           type: string
           example: newUser_some
+        password:
+          type: string
+          example: new_user_password
     Update_User:
       type: object
       properties:
         email:
           type: string
           example: updated_user_email@email.com
-        password:
-          type: string
-          example: new_password.456
 
     Error:
       type: object

@@ -40,10 +40,10 @@ app.get("/ping", (_req, res) => {
 });
 
 //ROUTER
-app.use("/login", authRouter);
-app.use("/users", isAuth, usersRouter);
-app.use("/properties", isAuth, propertiesRouter);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use("/api/login", authRouter);
+app.use("/api/users", isAuth, usersRouter);
+app.use("/api/properties", isAuth, propertiesRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {

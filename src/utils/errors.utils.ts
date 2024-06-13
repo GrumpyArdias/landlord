@@ -6,6 +6,7 @@ import type {
 } from "../types/errors";
 import { ErrorType } from "../enums/errors";
 import { HttpStatusCode } from "../enums/resStatus";
+import { Request, Response, NextFunction } from "express";
 
 export class ErrorWithStatus extends Error {
   public readonly status: number;
@@ -57,4 +58,19 @@ const errorData: ErrorData = {
     status: HttpStatusCode.INTERNAL_SERVER_ERROR,
     message: "Internal server error",
   },
+};
+
+export const authErrorHandler = (
+  err: {
+    name: string;
+  },
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (err.name === "AuthenticationError") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next(err);
+  return;
 };

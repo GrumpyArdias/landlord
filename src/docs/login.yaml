@@ -1,0 +1,83 @@
+paths:
+  /auth/login:
+    post:
+      summary: Allow to sign in into the API
+      tags:
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginReq"
+      responses:
+        "200":
+          description: Correct API authentication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginRes"
+        "401":
+          description: Bad request, incorrect email or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginFailed"
+        "500":
+          description: Internal error
+  /auth/reauth:
+    post:
+      summary: Returns a new access token
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Correct API re-authentication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginRes"
+        "401":
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal error
+
+components:
+  schemas:
+    LoginReq:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: test@test.com
+        password:
+          type: string
+          example: 123456
+    LoginRes:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 200
+        payload:
+          type: object
+          properties:
+            accessToken:
+              type: string
+              example: eyJhbGciOiJIObR6NiIsInR5cCI6IkpXVCJ9.eyG1c2VyIjp7ImlkIjoyLCJlbWFpbCI6InRlc3RAbWFpbC5jb20iLCJyb4xlIjoiU1VITGDfQURNSU4ifSwiaWF0IjoxNzAyMTI0NTQxLCJleHAiOjE3LJyGMjgxNDF9.M6NXvCSUyjy-yjl9TI8W1FvvFwTOwZmiOCWyyJrR5AE
+    LoginFailed:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 401
+        message:
+          type: string
+          example: Incorrect email or password

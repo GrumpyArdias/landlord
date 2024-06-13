@@ -9,6 +9,7 @@ import { authRouter } from "./auth/authRoute";
 import { propertiesRouter } from "./properties/propertiesRoute";
 import { isAuth } from "./middleware/auth.middleware";
 import { swaggerUi, swaggerSpecs } from "./utils/swagger.utils";
+import { authErrorHandler } from "./utils/errors.utils";
 
 const app = express();
 
@@ -40,10 +41,11 @@ app.get("/ping", (_req, res) => {
 });
 
 //ROUTER
-app.use("/login", authRouter);
-app.use("/users", isAuth, usersRouter);
-app.use("/properties", isAuth, propertiesRouter);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use("/api/login", authRouter);
+app.use("/api/users", isAuth, usersRouter);
+app.use("/api/properties", isAuth, propertiesRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use(authErrorHandler);
 
 const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {

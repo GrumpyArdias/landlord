@@ -1,44 +1,47 @@
 paths:
-  /auth/login:
+  /auth/signup:
     post:
-      summary: Allow to sign in into the API
+      summary: Allow you to create a new User
       tags:
-        - Login
+        - Register
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginReq"
+              $ref: "#/components/schemas/RegisterReq"
       responses:
         "200":
           description: Correct API authentication
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LoginRes"
+                $ref: "#/components/schemas/RegisterRes"
         "401":
-          description: Bad request, incorrect email or password
+          description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LoginFailed"
+                $ref: "#/components/schemas/Error"
         "500":
           description: Internal error
 
 components:
   schemas:
-    LoginReq:
+    RegisterReq:
       type: object
-      required: [email, password]
+      required: [username, email, password]
       properties:
+        username:
+          type: string
+          example: test
         email:
           type: string
           example: test@test.com
         password:
           type: string
           example: 123456
-    LoginRes:
+    RegisterRes:
       type: object
       properties:
         status:
@@ -47,10 +50,16 @@ components:
         payload:
           type: object
           properties:
-            accessToken:
+            id:
+              type: number
+              example: 1
+            username:
               type: string
-              example: eyJhbGciOiJIObR6NiIsInR5cCI6IkpXVCJ9.eyG1c2VyIjp7ImlkIjoyLCJlbWFpbCI6InRlc3RAbWFpbC5jb20iLCJyb4xlIjoiU1VITGDfQURNSU4ifSwiaWF0IjoxNzAyMTI0NTQxLCJleHAiOjE3LJyGMjgxNDF9.M6NXvCSUyjy-yjl9TI8W1FvvFwTOwZmiOCWyyJrR5AE
-    LoginFailed:
+              example: test
+            email:
+              type: string
+              example: test@test.com
+    RegisterFailed:
       type: object
       properties:
         status:

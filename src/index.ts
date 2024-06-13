@@ -41,7 +41,7 @@ app.get("/ping", (_req, res) => {
 });
 
 //ROUTER
-app.use("/api/login", authRouter);
+app.use("/auth", authRouter);
 app.use("/api/users", isAuth, usersRouter);
 app.use("/api/properties", isAuth, propertiesRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

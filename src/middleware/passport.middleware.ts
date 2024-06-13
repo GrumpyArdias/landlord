@@ -3,8 +3,6 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 import userService from "../users/userService";
 import { IUser } from "../types/user";
-import { ErrorType } from "../enums/errors";
-import { ErrorWithStatus } from "../utils/errors.utils";
 import { compareHashedData } from "../utils/bycript.utils";
 import type { JWTPayload } from "../types/auth";
 
@@ -18,22 +16,14 @@ passport.use(
     async (email, password, done) => {
       try {
         const user = await userService.getUserByEmail(email);
-        const loginError = new ErrorWithStatus(ErrorType.UNAUTHORIZED, {
-          alternativeMessage: "Incorrect email or password",
-        });
-
         if (!user) {
-          return done(loginError, false, {
-            message: "Incorrect email or password",
-          });
+          return done(new Error("Incorrect email or password"), false);
         }
 
         const isMatch = await compareHashedData(password, user.password);
 
         if (!isMatch) {
-          return done(loginError, false, {
-            message: "Incorrect email or password",
-          });
+          return done(new Error("Incorrect email or password"), false);
         }
 
         return done(null, user, { message: "Logged in successfully" });

@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken";
-import { ErrorWithStatus } from "./errors.utils";
-import { ErrorType } from "../enums/errors";
 
 const generateToken = (id: number) => {
   const secret = process.env.JWT_SECRET;
@@ -9,7 +7,7 @@ const generateToken = (id: number) => {
   if (secret && expiresIn) {
     return jwt.sign({ id }, secret, { expiresIn });
   }
-  throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
+  throw new Error("Internal server error");
 };
 
 export default { generateToken } as const;

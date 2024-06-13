@@ -2,40 +2,36 @@ import propertiesService from "./propertiesService";
 import { IProperty, IPropertyReq } from "../types/properties";
 import { IReq, IRes } from "../types/controllers";
 import { typeGuards } from "@src/utils/typeGuards.utils";
-import { ErrorType } from "@src/enums/errors";
-import { ErrorWithStatus } from "@src/utils/errors.utils";
 import { IUser } from "@src/types/user";
 
 const getProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
   try {
-    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     const properties = await propertiesService.getProperties(
       Number((req.user as IUser).id)
     );
     return res.status(200).json({ payload: properties });
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching the properties." });
   }
 };
 
 const getProperty = async (req: IReq<void>, res: IRes<IProperty>) => {
   try {
-    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     const property = await propertiesService.getProperty(
       Number((req.user as IUser).id),
       Number(req.params.id)
     );
     return res.status(200).json({ payload: property });
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching the property." });
   }
 };
 
@@ -44,7 +40,7 @@ const searchProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
     const query = req.query;
 
     if (!req.user) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Not authenticated" });
     }
 
     const properties = await propertiesService.searchProperties(
@@ -55,12 +51,7 @@ const searchProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
     return res.status(200).json({ payload: properties });
   } catch (error) {
     console.error(error);
-
-    if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).json({ error: error.message });
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    return res.status(500).json({ error: "An error occurred while searching" });
   }
 };
 const createProperty = async (
@@ -70,7 +61,8 @@ const createProperty = async (
   try {
     const property = req.body;
     if (typeGuards.isPropertyReqType(property)) {
-      if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+      if (!req.user)
+        return res.status(401).json({ error: "Not authenticated" });
       const newProperty = await propertiesService.createProperty(
         Number((req.user as IUser).id),
         property
@@ -80,11 +72,10 @@ const createProperty = async (
       return res.status(400).json("Invalid property data");
     }
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while creating the property." });
   }
 };
 
@@ -95,7 +86,8 @@ const updateProperty = async (
   try {
     const property = req.body;
     if (property.address || property.city || property.postalcode) {
-      if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+      if (!req.user)
+        return res.status(401).json({ error: "Not authenticated" });
       const updatedProperty = await propertiesService.updateProperty(
         Number((req.user as IUser).id),
         Number(req.params.id),
@@ -106,28 +98,26 @@ const updateProperty = async (
       return res.status(400).json("Invalid property data");
     }
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating the property." });
   }
 };
 
 const deleteProperty = async (req: IReq<void>, res: IRes<IProperty>) => {
   try {
-    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     const property = await propertiesService.deleteProperty(
       Number((req.user as IUser).id),
       Number(req.params.id)
     );
     return res.status(200).json({ payload: property });
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while deleting the property." });
   }
 };
 

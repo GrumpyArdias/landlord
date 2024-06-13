@@ -2,8 +2,6 @@ import userService from "./userService";
 import { IUser, IUserReq } from "../types/user";
 import { IReq, IRes } from "../types/controllers";
 import { typeGuards } from "@src/utils/typeGuards.utils";
-import { ErrorType } from "@src/enums/errors";
-import { ErrorWithStatus } from "@src/utils/errors.utils";
 import { hashData } from "@src/utils/bycript.utils";
 
 const getUsers = async (_req: IReq<void>, res: IRes<IUser[]>) => {
@@ -11,11 +9,10 @@ const getUsers = async (_req: IReq<void>, res: IRes<IUser[]>) => {
     const users = await userService.getUsers();
     return res.status(200).json({ payload: users });
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching the users." });
   }
 };
 
@@ -24,11 +21,10 @@ const getUser = async (req: IReq<void>, res: IRes<IUser>) => {
     const user = await userService.getUser(Number(req.params.id));
     return res.status(200).json({ payload: user });
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching the user." });
   }
 };
 
@@ -45,49 +41,45 @@ const createUser = async (req: IReq<IUserReq>, res: IRes<IUser>) => {
 
       return res.status(200).json({ payload: newUser });
     } else {
-      return res.status(400).json("Invalid user data");
+      return res.status(400).json({ error: "Invalid user data" });
     }
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while creating the user." });
   }
 };
 const updateUser = async (req: IReq<Partial<IUserReq>>, res: IRes<IUser>) => {
   try {
-    const user = req.body;
-    if (user.email || user.password) {
+    const userUpdates = req.body;
+    if (userUpdates.email || userUpdates.password) {
       const updatedUser = await userService.updateUser(
         Number(req.params.id),
-        user
+        userUpdates
       );
       return res.status(200).json(updatedUser);
     } else {
       return res
         .status(400)
-        .json("You must provide at least one field to update");
+        .json({ error: "You must provide at least one field to update" });
     }
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating the user." });
   }
 };
-
 const deleteUser = async (req: IReq<void>, res: IRes<IUser>) => {
   try {
     const user = await userService.deleteUser(Number(req.params.id));
     return res.status(200).json({ payload: user });
   } catch (error) {
-    if (error instanceof ErrorWithStatus) {
-      throw error;
-    } else {
-      throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while deleting the user." });
   }
 };
 

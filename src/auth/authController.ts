@@ -4,11 +4,8 @@ import { ILoginReq } from "@src/types/login";
 import { LoginPayload } from "@src/types/auth";
 import jwtUtils from "@src/utils/jwt.utils";
 import { IUserReq } from "@src/types/user";
-import { DBInstance } from "@src/utils/prisma.utils";
 import { hashData } from "@src/utils/bycript.utils";
-import { adaptUserResponse } from "@src/users/userDTF";
-
-const prisma = DBInstance.getClient();
+import userService from "@src/users/userService";
 
 const login = async (req: IReq<ILoginReq>, res: IRes<LoginPayload>) => {
   try {
@@ -33,20 +30,17 @@ const login = async (req: IReq<ILoginReq>, res: IRes<LoginPayload>) => {
 
 const register = async (req: IReq<IUserReq>, res: IRes<IUserReq>) => {
   try {
-    const { email, password, username } = req.body;
-    const hashedPassword = await hashData(password);
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        username,
-      },
+    const user = await userService.createUser({
+      email: req.body.email,
+      username: req.body.username,
+      password: await hashData(req.body.password),
     });
-    return res.status(201).json(adaptUserResponse(user));
+
+    if (!user) throw new Error("User not created");
+    return res.status(201).json(user);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
 export default { login, register } as const;

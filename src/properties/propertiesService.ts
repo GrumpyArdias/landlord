@@ -25,7 +25,6 @@ const searchProperties = async (
   ownerId: number,
   query: { [key: string]: any }
 ): Promise<IProperty[]> => {
-  // Build a where clause based on the query parameters
   const whereClause: { [key: string]: any } = {};
 
   if (query.address) {
@@ -33,6 +32,9 @@ const searchProperties = async (
   }
   if (query.postalcode) {
     whereClause.postalcode = query.postalcode;
+  }
+  if (query.city) {
+    whereClause.city = query.city;
   }
 
   const properties: IProperty[] = await prisma.properties.findMany({

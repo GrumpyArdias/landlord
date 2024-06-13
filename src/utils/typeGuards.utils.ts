@@ -25,9 +25,9 @@ const isUserTokenType = (data: unknown): data is IUserReq => {
 const isPropertyReqType = (data: any): data is IPropertyReq => {
   if (
     typeof data === "object" &&
-    "adress" in data &&
+    "address" in data &&
     "city" in data &&
-    "postalCode" in data
+    "postalcode" in data
   ) {
     return true;
   } else {

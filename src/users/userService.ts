@@ -54,6 +54,11 @@ const updateUser = async (
 };
 
 const deleteUser = async (id: number) => {
+  const hasProperties = await prisma.properties.findMany({
+    where: { ownerId: id },
+  });
+  if (hasProperties.length > 0)
+    throw new Error("User has properties associated");
   const deletedUser: IUser = await prisma.user.delete({ where: { id } });
   if (!deletedUser) throw new Error("User not deleted");
   return deletedUser;

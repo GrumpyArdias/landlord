@@ -42,7 +42,15 @@ app.get("/ping", (_req, res) => {
 //ROUTER
 app.use("/login", authRouter);
 app.use("/users", isAuth, usersRouter);
-app.use("/properties", isAuth, propertiesRouter);
+app.use(
+  "/properties",
+  (req, _res, next) => {
+    console.log(`Request to /properties: ${req.method} ${req.path}`);
+    next();
+  },
+  isAuth,
+  propertiesRouter
+);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 const PORT = process.env.PORT || 6000;

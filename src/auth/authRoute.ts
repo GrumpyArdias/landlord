@@ -4,7 +4,7 @@ import authController from "./authController";
 
 const router = Router();
 router.post(
-  "/",
+  "/login",
   passport.authenticate("login", {
     failureMessage: "login failed",
     session: false,
@@ -12,5 +12,7 @@ router.post(
   }),
   authController.login
 );
+
+router.post("/signup", authController.register);
 
 export { router as authRouter };

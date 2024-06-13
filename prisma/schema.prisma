@@ -22,6 +22,7 @@ model Properties {
   address    String
   city       String
   postalcode String
+  country    String   @default("Spain")
   owner      User     @relation(fields: [ownerId], references: [id])
   ownerId    Int
   created    DateTime @default(now())

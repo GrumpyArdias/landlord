@@ -2,10 +2,9 @@ import { Router } from "express";
 import propertiesController from "./propertiesController";
 
 const router = Router();
-
+router.get("/search", propertiesController.searchProperties);
 router.get("/", propertiesController.getProperties);
 router.get("/:id", propertiesController.getProperty);
-router.get("/search", propertiesController.searchProperties);
 router.post("/", propertiesController.createProperty);
 router.put("/:id", propertiesController.updateProperty);
 router.delete("/:id", propertiesController.deleteProperty);

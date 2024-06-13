@@ -43,7 +43,10 @@ const searchProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
   try {
     const query = req.query;
 
-    if (!req.user) throw new ErrorWithStatus(ErrorType.UNAUTHORIZED);
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const properties = await propertiesService.searchProperties(
       Number((req.user as IUser).id),
       query
@@ -51,8 +54,10 @@ const searchProperties = async (req: IReq<void>, res: IRes<IProperty[]>) => {
 
     return res.status(200).json({ payload: properties });
   } catch (error) {
+    console.error(error);
+
     if (error instanceof ErrorWithStatus) {
-      throw error;
+      return res.status(error.status).json({ error: error.message });
     } else {
       throw new ErrorWithStatus(ErrorType.INTERNAL_SERVER_ERROR);
     }

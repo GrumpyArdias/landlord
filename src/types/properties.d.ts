@@ -3,6 +3,7 @@ export interface IProperty {
   id: number;
   address: string;
   city: string;
+  country: string;
   postalcode: string;
   ownerId: number;
   createdAt?: Date;
